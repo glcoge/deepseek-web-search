@@ -7,3 +7,4 @@
 - 支持结果缓存、Search / Fetch 独立限速、408/429/5xx 重试和超时控制。
 - API Key 仅从插件配置 `[provider].api_key` 读取。
 - 工具通过 `visibility="visible"` 直接暴露给模型，无需 `tool_search` 发现。
+- WebUI 配置项增加中文标签和说明，配置版本改为只读展示。

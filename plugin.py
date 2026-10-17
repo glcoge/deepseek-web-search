@@ -32,8 +32,23 @@ class PluginSectionConfig(PluginConfigBase):
     __ui_icon__ = "package"
     __ui_order__ = 0
 
-    enabled: bool = Field(default=True, description="是否启用 DeepSeek 联网搜索与网页抓取工具")
-    config_version: str = Field(default="1.0.0", description="配置文件版本号")
+    enabled: bool = Field(
+        default=True,
+        description="是否启用 DeepSeek 联网搜索与网页抓取工具",
+        json_schema_extra={
+            "label": "启用插件",
+            "hint": "关闭后 deepseek_search 和 deepseek_fetch 都会返回“插件已停用”。",
+        },
+    )
+    config_version: str = Field(
+        default="1.0.0",
+        description="配置文件版本号",
+        json_schema_extra={
+            "label": "配置版本",
+            "hint": "由插件自动维护，通常不需要修改。",
+            "disabled": True,
+        },
+    )
 
 
 class ProviderConfig(PluginConfigBase):
@@ -47,21 +62,30 @@ class ProviderConfig(PluginConfigBase):
         default="",
         description="DeepSeek API Key。仅从本插件配置读取，不会复用模型配置中的 Key。",
         json_schema_extra={
+            "label": "API Key",
+            "hint": "仅保存在本地 config.toml，不会复用模型配置中的 Key。",
             "x-widget": "password",
             "placeholder": "sk-...",
-            "hint": "可在 platform.deepseek.com 创建，或从主程序 model_config.toml 的 DeepSeek api_providers 中复制。",
         },
     )
     base_url: str = Field(
         default="https://api.deepseek.com",
         description="DeepSeek API Base URL，通常不需要修改；使用代理时填写代理地址。",
-        json_schema_extra={"placeholder": "https://api.deepseek.com"},
+        json_schema_extra={
+            "label": "API 地址",
+            "hint": "默认使用 https://api.deepseek.com；使用代理时再修改。",
+            "placeholder": "https://api.deepseek.com",
+        },
     )
     timeout_seconds: float = Field(
         default=20.0,
         ge=1.0,
         le=120.0,
         description="单次 Search / Fetch 请求超时时间（秒）。",
+        json_schema_extra={
+            "label": "请求超时（秒）",
+            "hint": "单次 Search / Fetch 请求的超时时间，默认 20 秒。",
+        },
     )
 
 
@@ -77,36 +101,60 @@ class SearchConfig(PluginConfigBase):
         ge=1,
         le=50,
         description="模型未指定 count 时返回的结果条数。",
+        json_schema_extra={
+            "label": "默认结果数",
+            "hint": "模型没有指定 count 时返回几条结果，默认 4。",
+        },
     )
     max_count: int = Field(
         default=10,
         ge=1,
         le=50,
         description="允许模型请求的最大结果条数；超过时按此值截断。",
+        json_schema_extra={
+            "label": "最大结果数",
+            "hint": "模型最多能请求几条结果，超过时按这个值截断。",
+        },
     )
     max_content_chars: int = Field(
         default=2000,
         ge=0,
         le=20000,
         description="need_content=true 时每条网页正文的最大字符数，0 表示不返回正文。",
+        json_schema_extra={
+            "label": "正文字符上限",
+            "hint": "need_content=true 时每篇网页最多返回多少字符，0 表示不返回正文。",
+        },
     )
     max_output_chars: int = Field(
         default=8000,
         ge=1000,
         le=50000,
         description="一次搜索返回给模型的最大字符数。",
+        json_schema_extra={
+            "label": "总输出上限",
+            "hint": "一次搜索返回给模型的总字符上限，避免占用过多上下文。",
+        },
     )
     cache_ttl_seconds: int = Field(
         default=600,
         ge=0,
         le=86400,
         description="搜索结果缓存时间（秒），0 表示不缓存。",
+        json_schema_extra={
+            "label": "缓存时间（秒）",
+            "hint": "相同搜索在多少秒内复用结果，0 表示不缓存。",
+        },
     )
     qps: float = Field(
         default=5.0,
         ge=0.1,
         le=20.0,
         description="本地 Search 请求限速（次/秒）。DeepSeek 账号级限制为 5 QPS。",
+        json_schema_extra={
+            "label": "搜索限速（QPS）",
+            "hint": "本地每秒最多发起的搜索请求数，DeepSeek 账号级限制为 5。",
+        },
     )
 
 
@@ -122,12 +170,20 @@ class FetchConfig(PluginConfigBase):
         ge=0,
         le=50000,
         description="抓取网页正文返回给模型的最大字符数，0 表示不返回正文。",
+        json_schema_extra={
+            "label": "正文字符上限",
+            "hint": "抓取网页正文最多返回多少字符，0 表示不返回正文。",
+        },
     )
     qps: float = Field(
         default=5.0,
         ge=0.1,
         le=20.0,
         description="本地 Fetch 请求限速（次/秒）。DeepSeek 账号级限制为 5 QPS。",
+        json_schema_extra={
+            "label": "抓取限速（QPS）",
+            "hint": "本地每秒最多发起的抓取请求数，DeepSeek 账号级限制为 5。",
+        },
     )
 
 
