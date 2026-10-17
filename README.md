@@ -29,7 +29,8 @@ deepseek-web-search/
 ├── config.example.toml
 ├── plugin.py
 ├── README.md
-└── CHANGELOG.md
+├── CHANGELOG.md
+└── LICENSE
 ```
 
 首次加载时宿主会自动生成 `config.toml`，手动配置 API Key 即可开始使用。
