@@ -1,0 +1,20 @@
+[plugin]
+config_version = "1.0.0"
+enabled = true
+
+[provider]
+api_key = ""
+base_url = "https://api.deepseek.com"
+timeout_seconds = 20.0
+
+[search]
+default_count = 4
+max_count = 10
+max_content_chars = 2000
+max_output_chars = 8000
+cache_ttl_seconds = 600
+qps = 5.0
+
+[fetch]
+max_content_chars = 8000
+qps = 5.0
