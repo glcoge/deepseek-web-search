@@ -21,11 +21,13 @@
 ```
 deepseek-web-search/
 ├── _manifest.json
-├── config.toml
+├── config.example.toml
 ├── plugin.py
 ├── README.md
 └── CHANGELOG.md
 ```
+
+首次加载时宿主会自动生成 `config.toml`。仓库里只保留 `config.example.toml` 作为模板，`config.toml` 已被 `.gitignore` 忽略，避免把 API Key 提交到公开仓库。
 
 ## API Key
 
@@ -41,7 +43,7 @@ api_key = "sk-..."
 - 插件 SDK 没有向插件暴露模型 provider 凭据的稳定接口；`ctx.config.get` 读的是全局 bot 配置，不是模型配置。
 - 直接读 `config/model_config.toml` 会绕过主程序的配置管理，路径和格式变化时容易失效。
 
-可以在 [DeepSeek 开放平台](https://platform.deepseek.com/) 创建 Key，也可以从已有 `model_config.toml` 的 DeepSeek `api_providers` 里复制一份填到插件配置。插件配置中的 Key 和主程序模型配置一样以明文保存在 `config.toml`，WebUI 使用密码框展示。填写 Key 后不要把 `config.toml` 提交到公开仓库。
+可以在 [DeepSeek 开放平台](https://platform.deepseek.com/) 创建 Key，也可以从已有 `model_config.toml` 的 DeepSeek `api_providers` 里复制一份填到插件配置。插件配置中的 Key 和主程序模型配置一样以明文保存在本地 `config.toml`，WebUI 使用密码框展示。`config.toml` 已被 `.gitignore` 忽略，不要用 `git add -f` 强制提交它。
 
 ## 工具
 
@@ -71,6 +73,14 @@ api_key = "sk-..."
 返回标题和 Markdown 正文。正文超过 `fetch.max_content_chars` 时截断。
 
 ## 配置
+
+`config.toml` 由宿主自动生成；也可以复制模板：
+
+```bash
+cp config.example.toml config.toml
+```
+
+默认内容与模板一致：
 
 ```toml
 [plugin]
