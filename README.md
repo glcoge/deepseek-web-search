@@ -10,13 +10,18 @@
 > 使用本插件时，建议关闭模型配置里的“启用联网搜索”。那个开关添加的是 DeepSeek Responses API 的服务端 `web_search` 工具；两者同时开启时，模型可能走原生搜索而不是本插件。
 
 ## 安装
+有两种安装方式：
+### 插件市场安装
+在插件市场搜索这个插件（deepseek-web-search），点击“安装”即可。
+### 源码安装
+从 GitHub 安装：
 
-1. 把整个 `deepseek-web-search` 目录放到 MaiBot 的 `plugins/` 下。
-2. 重启 MaiBot，或在插件管理页重载插件。
-3. 打开插件配置，填写 `[provider].api_key`。
-4. 确认模型配置里的“启用联网搜索”已关闭，然后正常对话即可。模型会在需要实时信息或你明确要求联网时调用 `deepseek_search`。
+```bash
+git clone https://github.com/glcoge/deepseek-web-search.git plugins/deepseek-web-search
+```
 
-插件目录结构：
+
+**插件目录结构**：
 
 ```
 deepseek-web-search/
@@ -27,7 +32,7 @@ deepseek-web-search/
 └── CHANGELOG.md
 ```
 
-首次加载时宿主会自动生成 `config.toml`。仓库里只保留 `config.example.toml` 作为模板，`config.toml` 已被 `.gitignore` 忽略，避免把 API Key 提交到公开仓库。
+首次加载时宿主会自动生成 `config.toml`，手动配置 API Key 即可开始使用。
 
 ## API Key
 
@@ -38,12 +43,7 @@ Key **只从本插件配置读取**：
 api_key = "sk-..."
 ```
 
-不会自动复用主程序 `model_config.toml` 里 DeepSeek 模型配置的 Key。原因有两点：
-
-- 插件 SDK 没有向插件暴露模型 provider 凭据的稳定接口；`ctx.config.get` 读的是全局 bot 配置，不是模型配置。
-- 直接读 `config/model_config.toml` 会绕过主程序的配置管理，路径和格式变化时容易失效。
-
-可以在 [DeepSeek 开放平台](https://platform.deepseek.com/) 创建 Key，也可以从已有 `model_config.toml` 的 DeepSeek `api_providers` 里复制一份填到插件配置。插件配置中的 Key 和主程序模型配置一样以明文保存在本地 `config.toml`，WebUI 使用密码框展示。`config.toml` 已被 `.gitignore` 忽略，不要用 `git add -f` 强制提交它。
+可以在 [DeepSeek 开放平台](https://platform.deepseek.com/) 创建 Key，也可以从已有 `model_config.toml` 的 DeepSeek `api_providers` 里直接复制一份填到插件配置。
 
 ## 工具
 
@@ -151,7 +151,6 @@ qps = 5.0
 | 调用方 | DeepSeek 服务端 | 插件请求 API，再把结果交给模型 |
 | 可控性 | 受模型客户端实现限制 | 可配置条数、正文、缓存、限速、超时 |
 
-如果希望“模型配置里的开关”直接改走新 Search API，那需要改主程序核心代码，不是插件能完成的；本插件走的是独立的 Tool 路线。
 
 ## 排查
 
@@ -166,13 +165,3 @@ qps = 5.0
 
 - 源码：<https://github.com/glcoge/deepseek-web-search>
 - 问题反馈：<https://github.com/glcoge/deepseek-web-search/issues>
-
-从 GitHub 安装：
-
-```bash
-git clone https://github.com/glcoge/deepseek-web-search.git plugins/deepseek-web-search
-```
-
-然后重启 MaiBot，在插件配置中填写 API Key。
-
-插件 ID 为 `glcoge.deepseek-web-search`。提交到插件市场前，请确认插件 ID、作者信息和仓库地址保持一致，并参考 [插件提交说明](https://github.com/Mai-with-u/plugin-repo/blob/main/CONTRIBUTING.md)。
